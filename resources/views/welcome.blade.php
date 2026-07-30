@@ -539,7 +539,7 @@
                     <i class="bi bi-stars me-1"></i> SISTEM SERTIFIKAT DIGITAL
                 </div>
                 <h1 class="hero-title">
-                    Kelola Sertifikat Kegiatan Sekolah SMA
+                    Kelola Sertifikat Kegiatan Sekolah
                     <span>Lebih Mudah & Cepat</span>
                 </h1>
                 <p class="hero-desc">
