@@ -618,8 +618,8 @@
     <div class="container">
         <div class="text-center mb-5 fade-up">
             <div class="section-badge">FITUR UNGGULAN</div>
-            <h2 class="section-title">Semua yang Kamu Butuhkan</h2>
-            <p class="section-desc">Dirancang khusus untuk kebutuhan pengelolaan sertifikat kegiatan sekolah</p>
+            <h2 class="section-title">Fitur Lengkap untuk Kelola Sertifikat</h2>
+            <p class="section-desc">Solusi lengkap dan praktis untuk kebutuhan cetak serta pengelolaan sertifikat sekolah</p>
         </div>
 
         <div class="row g-4">
@@ -629,7 +629,7 @@
                         <i class="bi bi-layout-text-window"></i>
                     </div>
                     <div class="feature-title">Template Kustom</div>
-                    <div class="feature-desc">Upload background sertifikat sendiri dan atur tanda tangan kepala sekolah beserta panitia.</div>
+                    <div class="feature-desc">Atur tata letak, logo sekolah, dan tanda tangan digital dengan mudah.</div>
                 </div>
             </div>
             <div class="col-md-4 fade-up">
@@ -637,8 +637,8 @@
                     <div class="feature-icon" style="background:rgba(26,110,74,0.1);color:#1a6e4a;">
                         <i class="bi bi-people-fill"></i>
                     </div>
-                    <div class="feature-title">Import Peserta Massal</div>
-                    <div class="feature-desc">Import ratusan peserta sekaligus dari file Excel atau CSV. Hemat waktu tanpa input manual.</div>
+                    <div class="feature-title">Import Data Excel</div>
+                    <div class="feature-desc">Unggah file Excel/CSV untuk memasukkan ratusan nama peserta sekaligus.</div>
                 </div>
             </div>
             <div class="col-md-4 fade-up">
@@ -647,7 +647,7 @@
                         <i class="bi bi-lightning-charge-fill"></i>
                     </div>
                     <div class="feature-title">Generate 1 Klik</div>
-                    <div class="feature-desc">Generate sertifikat untuk semua peserta dalam satu kegiatan hanya dengan satu klik tombol.</div>
+                    <div class="feature-desc">Buat seluruh sertifikat peserta secara instan tanpa perlu ketik satu per satu.</div>
                 </div>
             </div>
             <div class="col-md-4 fade-up">
@@ -656,7 +656,7 @@
                         <i class="bi bi-file-earmark-pdf-fill"></i>
                     </div>
                     <div class="feature-title">Export PDF Berkualitas</div>
-                    <div class="feature-desc">Sertifikat diexport dalam format PDF A4 landscape dengan kualitas cetak tinggi.</div>
+                    <div class="feature-desc">Hasil sertifikat siap cetak dengan resolusi tinggi dan fromat A4.</div>
                 </div>
             </div>
             <div class="col-md-4 fade-up">
@@ -674,7 +674,7 @@
                         <i class="bi bi-person-check-fill"></i>
                     </div>
                     <div class="feature-title">Akses Multi Role</div>
-                    <div class="feature-desc">Admin, Guru/Panitia, dan Siswa memiliki hak akses berbeda sesuai kebutuhan masing-masing.</div>
+                    <div class="feature-desc">Akses khusus yang disesuaikan untuk Admin, Panitia, Guru, dan Siswa.</div>
                 </div>
             </div>
         </div>
