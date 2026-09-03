@@ -510,6 +510,49 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        @media (max-width: 991.98px) {
+            .hero {
+                min-height: auto;
+                padding: 120px 0 70px;
+            }
+
+            .hero-title { font-size: 2.7rem; }
+            .section-features, .section-howto, .section-role, .section-cta { padding: 80px 0; }
+            .hero-card { max-width: 620px; margin: 0 auto; }
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar-custom { padding: 10px 0; }
+            .navbar-custom .container { gap: 10px; }
+            .navbar-brand-text { font-size: 1rem; }
+            .btn-nav-login, .btn-nav-register { padding: 6px 12px; font-size: 0.78rem; }
+
+            .hero { padding: 105px 0 55px; }
+            .hero .row { row-gap: 2rem !important; }
+            .hero-title { font-size: 2.15rem; }
+            .hero-desc { font-size: 0.95rem; margin-bottom: 28px; }
+            .hero-badge { font-size: 0.7rem; margin-bottom: 15px; }
+            .btn-hero-primary, .btn-hero-secondary { width: 100%; text-align: center; padding: 12px 18px; }
+            .hero-card { padding: 18px; }
+            .hero-cert-preview { padding: 18px 12px; }
+            .cert-main-preview { font-size: 1.15rem; letter-spacing: 2px; }
+
+            .section-features, .section-howto, .section-role, .section-cta { padding: 60px 0; }
+            .section-title { font-size: 1.8rem; }
+            .section-desc { font-size: 0.92rem; }
+            .feature-card, .role-card { padding: 24px; }
+            .step-card { padding: 14px 20px; }
+            .cta-title { font-size: 2rem; }
+            .cta-desc { font-size: 0.94rem; margin-bottom: 28px; }
+        }
+
+        @media (max-width: 380px) {
+            .navbar-brand-text { font-size: 0.86rem; }
+            .btn-nav-login, .btn-nav-register { padding: 6px 9px; font-size: 0.72rem; }
+            .hero-title { font-size: 1.9rem; }
+            .hero-card [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+        }
     </style>
 </head>
 <body>
@@ -582,9 +625,6 @@
                 </div>
             </div>
         </div>
-
-    </div>
-</div>
 
                     <div class="hero-stat">
                         <div class="hero-stat-icon"><i class="bi bi-lightning-charge-fill"></i></div>

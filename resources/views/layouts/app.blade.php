@@ -11,7 +11,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body { background-color: #f0f2f5; }
+        body { background-color: #f0f2f5; overflow-x: hidden; }
+
+        #sidebar-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(0, 0, 0, 0.35);
+        }
 
         /* Sidebar */
         #sidebar {
@@ -115,16 +122,22 @@
             color: #a6b0bd;
         }
 
-        @media (max-width: 768px) {
-            #sidebar { margin-left: -260px; }
-            #sidebar.show { margin-left: 0; }
-            #main-content { margin-left: 0; }
+        @media (max-width: 767.98px) {
+            #sidebar { margin-left: 0; transform: translateX(-100%); }
+            #sidebar.show { transform: translateX(0); }
+            #main-content { margin-left: 0; padding: 12px; }
+            .topbar { padding: 12px 14px; margin-bottom: 16px; gap: 12px; }
+            .topbar h5 { font-size: 1rem; }
+            .topbar-actions { gap: 8px !important; }
+            .user-name { display: none; }
         }
     </style>
 
     @stack('styles')
 </head>
 <body>
+
+<div id="sidebar-backdrop" class="d-none"></div>
 
 {{-- ===== SIDEBAR ===== --}}
 <div id="sidebar">
@@ -216,18 +229,23 @@
 
     {{-- Topbar --}}
     <div class="topbar">
-        <div>
-            <h5 class="mb-0 fw-bold">@yield('page-title', 'Dashboard')</h5>
-            <small class="text-muted">@yield('page-subtitle', '')</small>
+        <div class="d-flex align-items-center">
+            <button id="sidebar-toggle" class="btn btn-outline-primary d-md-none me-2" type="button" aria-label="Buka menu">
+                <i class="bi bi-list"></i>
+            </button>
+            <div>
+                <h5 class="mb-0 fw-bold">@yield('page-title', 'Dashboard')</h5>
+                <small class="text-muted">@yield('page-subtitle', '')</small>
+            </div>
         </div>
-        <div class="d-flex align-items-center gap-3">
+        <div class="topbar-actions d-flex align-items-center gap-3">
             <span class="badge bg-primary rounded-pill">
                 {{ ucfirst(auth()->user()->role) }}
             </span>
             <div class="dropdown">
                 <button class="btn btn-light rounded-pill" data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle me-1"></i>
-                    {{ auth()->user()->name }}
+                    <span class="user-name">{{ auth()->user()->name }}</span>
                     <i class="bi bi-chevron-down ms-1"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -265,6 +283,24 @@
 
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+    function closeSidebar() {
+        sidebar.classList.remove('show');
+        sidebarBackdrop.classList.add('d-none');
+    }
+
+    sidebarToggle?.addEventListener('click', () => {
+        sidebar.classList.toggle('show');
+        sidebarBackdrop.classList.toggle('d-none', !sidebar.classList.contains('show'));
+    });
+
+    sidebarBackdrop?.addEventListener('click', closeSidebar);
+    document.querySelectorAll('#sidebar .nav-link').forEach(link => link.addEventListener('click', closeSidebar));
+</script>
 @stack('scripts')
 </body>
 </html>
