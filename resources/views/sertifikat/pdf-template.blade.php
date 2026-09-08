@@ -16,6 +16,24 @@
     $fontNama   = (int) ($template->font_size_nama   ?? 26);
     $fontDetail = (int) ($template->font_size_detail ?? 13);
 
+    $perataan    = $template->perataan_teks ?? 'tengah';
+    $textAlign   = match($perataan) {
+        'kiri'  => 'left',
+        'kanan' => 'right',
+        default => 'center',
+    };
+    // Margin untuk garis dan tabel ttd
+    $marginGaris = match($perataan) {
+        'kiri'  => '0 auto 8px 0',
+        'kanan' => '0 0 8px auto',
+        default => '0 auto 8px auto',
+    };
+    $marginTtd = match($perataan) {
+        'kiri'  => '0 auto 0 0',
+        'kanan' => '0 0 0 auto',
+        default => '0 auto',
+    };
+
     $bgSrc = '';
     if ($template && !empty($template->background_path)) {
         $bgPath = storage_path('app/public/' . $template->background_path);
@@ -124,6 +142,10 @@
             padding: 0;
         }
 
+        .align-konten {
+            text-align: {{ $textAlign }};
+        }
+
         table.content-table {
             width: 220mm;
             margin: 0 auto;
@@ -131,7 +153,7 @@
         }
 
         td.content-cell {
-            text-align: center;
+            text-align: {{ $textAlign }};
             vertical-align: middle;
             padding: 0;
         }
@@ -163,7 +185,7 @@
             border: none;
             border-top: 1.5px solid #c8a000;
             width: 120px;
-            margin: 0 auto 8px auto;
+            margin: {{ $marginGaris }};
         }
 
         .teks-diberikan {
@@ -183,7 +205,7 @@
             border: none;
             border-top: 1px solid #bbb;
             width: 300px;
-            margin: 0 auto 8px auto;
+            margin: {{ $marginGaris }};
         }
 
         .teks-partisipasi {
@@ -200,7 +222,7 @@
 
         table.ttd {
             width: 300px;
-            margin: 0 auto;
+            margin: {{ $marginTtd }};
             border-collapse: collapse;
         }
 

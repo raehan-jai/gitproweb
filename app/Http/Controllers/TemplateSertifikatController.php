@@ -74,6 +74,7 @@ class TemplateSertifikatController extends Controller
             'nip_panitia' => 'nullable|string|max:255',
             'font_size_nama' => 'nullable|integer|min:10|max:72',
             'font_size_detail' => 'nullable|integer|min:8|max:36',
+            'perataan_teks' => 'nullable|in:kiri,tengah,kanan',
         ]);
     }
 
