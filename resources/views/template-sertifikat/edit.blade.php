@@ -169,6 +169,49 @@
     </div>
 </div>
 
+{{-- Live Preview --}}
+<div class="card table-card mt-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-bold"><i class="bi bi-eye text-primary me-2"></i>Live Preview Sertifikat</h6>
+        <small class="text-muted">Perubahan form tampil secara langsung</small>
+    </div>
+    <div class="card-body p-3 p-md-4 bg-light">
+        <div class="certificate-preview-shell mx-auto">
+            <div id="certificatePreview" class="certificate-preview">
+                <img id="certificatePreviewBg" class="certificate-preview-bg" src="{{ $templateSertifikat->background_path ? Storage::url($templateSertifikat->background_path) : '' }}" alt="">
+                <div class="certificate-preview-content">
+                    <img id="certificatePreviewLogo" data-preview-element="logo-sekolah" class="certificate-preview-logo {{ $templateSertifikat->logo_sekolah_path ? '' : 'd-none' }}" src="{{ $templateSertifikat->logo_sekolah_path ? Storage::url($templateSertifikat->logo_sekolah_path) : '' }}" alt="Logo Sekolah">
+                    <div class="certificate-preview-label">Penghargaan &nbsp; Prestasi</div>
+                    <div class="certificate-preview-title">Sertifikat</div>
+                    <hr class="certificate-preview-title-line">
+                    <div class="certificate-preview-given">Diberikan kepada</div>
+                    <div id="certificatePreviewNama" data-preview-element="nama" class="certificate-preview-name">Nama Peserta</div>
+                    <div class="certificate-preview-recipient">Kelas Peserta &nbsp;&bull;&nbsp; NIS: 00000000</div>
+                    <hr class="certificate-preview-name-line">
+                    <div class="certificate-preview-participation">atas partisipasi dan dedikasi dalam kegiatan</div>
+                    <div id="certificatePreviewKegiatan" data-preview-element="detail-kegiatan" class="certificate-preview-activity">&ldquo;Nama Kegiatan&rdquo;</div>
+                    <div class="certificate-preview-event-detail">Tanggal Kegiatan &nbsp;&bull;&nbsp; Penyelenggara</div>
+                    <div class="certificate-preview-signatures">
+                        <div data-preview-element="ttd-kepsek" class="certificate-preview-signature">
+                            <div class="certificate-preview-signature-image-wrap"><img id="certificatePreviewTtdKepsek" class="certificate-preview-signature-image {{ $templateSertifikat->ttd_kepsek_path ? '' : 'd-none' }}" src="{{ $templateSertifikat->ttd_kepsek_path ? Storage::url($templateSertifikat->ttd_kepsek_path) : '' }}" alt="TTD Kepala Sekolah"></div>
+                            <div class="certificate-preview-signature-line"></div><div class="certificate-preview-role">Kepala Sekolah</div>
+                            <div id="certificatePreviewNamaKepsek" class="certificate-preview-signature-name">{{ old('nama_kepsek', $templateSertifikat->nama_kepsek) }}</div>
+                            <div id="certificatePreviewNipKepsek" class="certificate-preview-nip">{{ old('nip_kepsek', $templateSertifikat->nip_kepsek) ? 'NIP. ' . old('nip_kepsek', $templateSertifikat->nip_kepsek) : '' }}</div>
+                        </div>
+                        <div data-preview-element="ttd-panitia" class="certificate-preview-signature">
+                            <div class="certificate-preview-signature-image-wrap"><img id="certificatePreviewTtdPanitia" class="certificate-preview-signature-image {{ $templateSertifikat->ttd_panitia_path ? '' : 'd-none' }}" src="{{ $templateSertifikat->ttd_panitia_path ? Storage::url($templateSertifikat->ttd_panitia_path) : '' }}" alt="TTD Ketua Panitia"></div>
+                            <div class="certificate-preview-signature-line"></div><div class="certificate-preview-role">Ketua Panitia</div>
+                            <div id="certificatePreviewNamaPanitia" class="certificate-preview-signature-name">{{ old('nama_panitia', $templateSertifikat->nama_panitia) }}</div>
+                            <div id="certificatePreviewNipPanitia" class="certificate-preview-nip">{{ old('nip_panitia', $templateSertifikat->nip_panitia) ? 'NIP. ' . old('nip_panitia', $templateSertifikat->nip_panitia) : '' }}</div>
+                        </div>
+                    </div>
+                    <div class="certificate-preview-number">NO. SERTIFIKAT : PREVIEW</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="d-flex gap-2 mt-2">
     <button type="submit" class="btn btn-warning px-5 fw-semibold">
         <i class="bi bi-save me-2"></i> Simpan Perubahan
@@ -181,8 +224,34 @@
 @endsection
 
 @push('scripts')
+<style>
+    .certificate-preview-shell { max-width: 1123px; }
+    .certificate-preview { position: relative; aspect-ratio: 297 / 210; overflow: hidden; background: #fff; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); font-family: Georgia, 'Times New Roman', serif; }
+    .certificate-preview-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+    .certificate-preview-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6% 13%; text-align: center; color: #444; }
+    .certificate-preview-logo { max-width: 7%; max-height: 14%; object-fit: contain; margin-bottom: .5%; }
+    .certificate-preview-label { font-size: clamp(5px, .67vw, 10px); color: #555; letter-spacing: .55em; text-transform: uppercase; margin-bottom: .5%; }
+    .certificate-preview-title { font-size: clamp(20px, 3.1vw, 45px); line-height: 1; color: #8b6914; font-weight: bold; letter-spacing: .3em; text-transform: uppercase; margin-left: .3em; }
+    .certificate-preview-title-line { width: 16%; border: 0; border-top: 1.5px solid #c8a000; margin: 1.2% 0; opacity: 1; }
+    .certificate-preview-given { font-size: clamp(6px, .8vw, 12px); color: #555; font-style: italic; margin-bottom: .5%; }
+    .certificate-preview-name { font-weight: bold; color: #1a3a6e; line-height: 1.2; }
+    .certificate-preview-recipient { font-size: clamp(5px, .72vw, 10px); color: #666; margin: .5% 0 1%; }
+    .certificate-preview-name-line { width: 40%; border: 0; border-top: 1px solid #bbb; margin: 0 0 1%; opacity: 1; }
+    .certificate-preview-participation { font-size: clamp(5px, .72vw, 10px); margin-bottom: .4%; }
+    .certificate-preview-activity { font-weight: bold; color: #1e3a5f; line-height: 1.2; }
+    .certificate-preview-event-detail { font-size: clamp(5px, .65vw, 9px); color: #666; margin: .5% 0 2%; }
+    .certificate-preview-signatures { display: flex; width: 46%; justify-content: space-between; }
+    .certificate-preview-signature { width: 45%; font-family: Arial, sans-serif; }
+    .certificate-preview-signature-image-wrap { height: clamp(20px, 4vw, 45px); display: flex; align-items: flex-end; justify-content: center; }
+    .certificate-preview-signature-image { max-width: 75%; max-height: 100%; object-fit: contain; }
+    .certificate-preview-signature-line { border-top: 1px solid #333; margin-bottom: 2%; }
+    .certificate-preview-role { font-size: clamp(5px, .67vw, 9px); font-weight: bold; color: #222; }
+    .certificate-preview-signature-name { font-size: clamp(5px, .62vw, 8px); color: #333; text-decoration: underline; min-height: 1em; }
+    .certificate-preview-nip { font-size: clamp(4px, .57vw, 7px); color: #555; min-height: 1em; }
+    .certificate-preview-number { font-family: Arial, sans-serif; font-size: clamp(4px, .57vw, 7px); color: #666; letter-spacing: .1em; margin-top: 1.5%; }
+</style>
 <script>
-    function previewImage(inputId, containerId, imgId) {
+    function previewImage(inputId, containerId, imgId, certificateImageId) {
         document.getElementById(inputId).addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -190,13 +259,40 @@
             reader.onload = ev => {
                 document.getElementById(imgId).src = ev.target.result;
                 document.getElementById(containerId).classList.remove('d-none');
+                const certificateImage = document.getElementById(certificateImageId);
+                certificateImage.src = ev.target.result;
+                certificateImage.classList.remove('d-none');
             };
             reader.readAsDataURL(file);
         });
     }
-    previewImage('inputBg', 'previewBg', 'previewBgImg');
-    previewImage('inputLogoSekolah', 'previewLogoSekolah', 'previewLogoSekolahImg');
-    previewImage('inputTtdKepsek', 'previewTtdKepsek', 'previewTtdKepsekImg');
-    previewImage('inputTtdPanitia', 'previewTtdPanitia', 'previewTtdPanitiaImg');
+    previewImage('inputBg', 'previewBg', 'previewBgImg', 'certificatePreviewBg');
+    previewImage('inputLogoSekolah', 'previewLogoSekolah', 'previewLogoSekolahImg', 'certificatePreviewLogo');
+    previewImage('inputTtdKepsek', 'previewTtdKepsek', 'previewTtdKepsekImg', 'certificatePreviewTtdKepsek');
+    previewImage('inputTtdPanitia', 'previewTtdPanitia', 'previewTtdPanitiaImg', 'certificatePreviewTtdPanitia');
+
+    function bindPreviewText(inputName, previewId, formatter = value => value) {
+        const input = document.querySelector(`[name="${inputName}"]`);
+        const preview = document.getElementById(previewId);
+        const update = () => preview.textContent = formatter(input.value.trim());
+        input.addEventListener('input', update);
+        update();
+    }
+    bindPreviewText('nama_template', 'certificatePreviewKegiatan', value => value ? `"${value}"` : '"Nama Kegiatan"');
+    bindPreviewText('nama_kepsek', 'certificatePreviewNamaKepsek');
+    bindPreviewText('nip_kepsek', 'certificatePreviewNipKepsek', value => value ? `NIP. ${value}` : '');
+    bindPreviewText('nama_panitia', 'certificatePreviewNamaPanitia');
+    bindPreviewText('nip_panitia', 'certificatePreviewNipPanitia', value => value ? `NIP. ${value}` : '');
+
+    ['font_size_nama', 'font_size_detail'].forEach(name => {
+        const input = document.querySelector(`[name="${name}"]`);
+        const preview = document.getElementById(name === 'font_size_nama' ? 'certificatePreviewNama' : 'certificatePreviewKegiatan');
+        const update = () => preview.style.fontSize = `${input.value || input.min}pt`;
+        input.addEventListener('input', update);
+        input.addEventListener('change', update);
+        update();
+    });
+
+    // data-preview-element menjadi titik integrasi bagi state posisi drag/drop yang tersedia nanti.
 </script>
 @endpush
