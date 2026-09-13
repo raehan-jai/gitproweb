@@ -5,29 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Sertifikat Sekolah')</title>
 
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        body { background-color: #f0f2f5; overflow-x: hidden; }
 
-        #sidebar-backdrop {
-            position: fixed;
-            inset: 0;
-            z-index: 99;
-            background: rgba(0, 0, 0, 0.35);
-        }
+    <style>
+        body { background-color: #f0f2f5; }
+
 
         /* Sidebar */
         #sidebar {
-            width: 260px;
-            min-height: 100vh;
-            background: linear-gradient(180deg, #1e3a5f 0%, #2d6a9f 100%);
+            width: 240px;
+            height: calc(100vh - 60px);
+            background: linear-gradient(180deg, #1e3a5f 0%, #2d6a9f 100%); /* Warna gradient asli */
             position: fixed;
-            top: 0; left: 0;
-            z-index: 100;
+            top: 60px;
+            left: 0;
+            z-index: 99;
+            padding-top: 15px;
             transition: all 0.3s;
         }
         #sidebar .sidebar-brand {
@@ -38,37 +36,68 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         #sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8); /* Warna teks putih semi transparan asli */
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
             border-radius: 8px;
-            margin: 2px 10px;
+            margin: 2px 12px;
             transition: all 0.2s;
         }
         #sidebar .nav-link:hover,
         #sidebar .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
+            background: rgba(255, 255, 255, 0.15); /* Efek hover asli */
+            color: #ffffff;
         }
-        #sidebar .nav-link i { margin-right: 10px; width: 20px; }
+        #sidebar small {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        #sidebar .nav-link i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
 
         /* Main Content */
         #main-content {
-            margin-left: 260px;
-            padding: 20px;
+            margin-left: 240px;
+            padding: 25px;
+            padding-top: 85px;
             min-height: 100vh;
         }
 
+
         /* Topbar */
         .topbar {
-            background: #fff;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #ffffff;
+            padding: 0 24px;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 1000;
         }
+
+
+        .topbar .brand-logo {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e3a5f; /* Warna biru utama project */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 230px;
+        }
+
 
         /* Cards */
         .stat-card {
@@ -79,6 +108,7 @@
         }
         .stat-card:hover { transform: translateY(-3px); }
 
+
         /* Table */
         .table-card {
             border: none;
@@ -87,9 +117,11 @@
             overflow: hidden;
         }
 
+
         .app-pagination {
             gap: 6px;
         }
+
 
         .app-pagination .page-link {
             min-width: 38px;
@@ -104,11 +136,13 @@
             box-shadow: none;
         }
 
+
         .app-pagination .page-link:hover {
             background: #eef6ff;
             border-color: #cfe4fb;
             color: #2d6a9f;
         }
+
 
         .app-pagination .page-item.active .page-link {
             background: #2d6a9f;
@@ -116,35 +150,44 @@
             color: #fff;
         }
 
+
         .app-pagination .page-item.disabled .page-link {
             background: #f8fafc;
             border-color: #edf0f4;
             color: #a6b0bd;
         }
 
-        @media (max-width: 767.98px) {
-            #sidebar { margin-left: 0; transform: translateX(-100%); }
-            #sidebar.show { transform: translateX(0); }
-            #main-content { margin-left: 0; padding: 12px; }
-            .topbar { padding: 12px 14px; margin-bottom: 16px; gap: 12px; }
-            .topbar h5 { font-size: 1rem; }
-            .topbar-actions { gap: 8px !important; }
-            .user-name { display: none; }
+
+        @media (max-width: 768px) {
+            #sidebar { margin-left: -240px; }
+            #sidebar.show { margin-left: 0; }
+            #main-content { margin-left: 0; }
         }
     </style>
+
 
     @stack('styles')
 </head>
 <body>
 
-<div id="sidebar-backdrop" class="d-none"></div>
 
 {{-- ===== SIDEBAR ===== --}}
 <div id="sidebar">
     <div class="sidebar-brand">
+    @if(request()->routeIs('dashboard'))
+        <i class="bi bi-speedometer2 me-2"></i>
+    @elseif(request()->routeIs('sertifikat.milik-saya'))
+        <i class="bi bi-file-earmark-check me-2"></i>
+    @elseif(request()->routeIs('account-request.*'))
+        <i class="bi bi-person-check me-2"></i>
+    @else
         <i class="bi bi-award-fill me-2"></i>
-        Sertifikat Sekolah
+    @endif
+
+
+    <span>@yield('page-title', 'Dashboard')</span>
     </div>
+
 
     <nav class="mt-3">
         <ul class="nav flex-column">
@@ -155,6 +198,7 @@
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
             </li>
+
 
             {{-- Menu Guru & Admin --}}
             @if(auth()->user()->role !== 'siswa')
@@ -181,6 +225,7 @@
             </li>
             @endif
 
+
             {{-- Menu Admin saja --}}
             {{-- Tambahkan di dalam @if(auth()->user()->isAdmin()) --}}
            @if(auth()->user()->isAdmin())
@@ -191,6 +236,7 @@
                     </a>
                 </li>
             @endif
+
 
             {{-- Menu Siswa --}}
             @if(auth()->user()->isSiswa())
@@ -204,48 +250,44 @@
                 </a>
             </li>
             @endif
-            
-            @if(auth()->user()->isAdmin())
+           
+            <li class="nav-item">
                 <li class="nav-item mt-2">
                     <small class="text-white-50 px-3">PENGATURAN</small>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('account-request.index') }}"
-                       class="nav-link {{ request()->routeIs('account-request.*') ? 'active' : '' }}">
-                        <i class="bi bi-person-check"></i> Request Akun
-                        @php $pendingCount = \App\Models\AccountRequest::where('status', 'pending')->count(); @endphp
-                        @if($pendingCount > 0)
-                            <span class="badge bg-warning text-dark ms-auto">{{ $pendingCount }}</span>
-                        @endif
-                    </a>
-                </li>
-            @endif
+                <a href="{{ route('account-request.index') }}"
+                   class="nav-link {{ request()->routeIs('account-request.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-check"></i> Request Akun
+                    @php $pendingCount = \App\Models\AccountRequest::where('status','pending')->count(); @endphp
+                    @if($pendingCount > 0)
+                        <span class="badge bg-warning text-dark ms-auto">{{ $pendingCount }}</span>
+                    @endif
+                </a>
+            </li>
         </ul>
     </nav>
 </div>
 
+
 {{-- ===== MAIN CONTENT ===== --}}
 <div id="main-content">
 
+
     {{-- Topbar --}}
     <div class="topbar">
-        <div class="d-flex align-items-center">
-            <button id="sidebar-toggle" class="btn btn-outline-primary d-md-none me-2" type="button" aria-label="Buka menu">
-                <i class="bi bi-list"></i>
-            </button>
-            <div>
-                <h5 class="mb-0 fw-bold">@yield('page-title', 'Dashboard')</h5>
-                <small class="text-muted">@yield('page-subtitle', '')</small>
-            </div>
-        </div>
-        <div class="topbar-actions d-flex align-items-center gap-3">
+        <!-- Tambahkan baris logo ini paling atas di dalam topbar -->
+    <a href="{{ route('dashboard') }}" class="brand-logo">
+        <i class="bi bi-award-fill text-primary"></i>
+        <span>Sertifikat Sekolah</span>
+    </a>
+        <div class="d-flex align-items-center gap-3">
             <span class="badge bg-primary rounded-pill">
                 {{ ucfirst(auth()->user()->role) }}
             </span>
             <div class="dropdown">
                 <button class="btn btn-light rounded-pill" data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle me-1"></i>
-                    <span class="user-name">{{ auth()->user()->name }}</span>
+                    {{ auth()->user()->name }}
                     <i class="bi bi-chevron-down ms-1"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -262,6 +304,7 @@
         </div>
     </div>
 
+
     {{-- Alert Notifikasi --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
@@ -270,6 +313,7 @@
         </div>
     @endif
 
+
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
@@ -277,32 +321,14 @@
         </div>
     @endif
 
+
     {{-- Konten Halaman --}}
     @yield('content')
 </div>
 
+
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
-
-    function closeSidebar() {
-        sidebar.classList.remove('show');
-        sidebarBackdrop.classList.add('d-none');
-    }
-
-    sidebarToggle?.addEventListener('click', () => {
-        sidebar.classList.toggle('show');
-        sidebarBackdrop.classList.toggle('d-none', !sidebar.classList.contains('show'));
-    });
-
-    sidebarBackdrop?.addEventListener('click', closeSidebar);
-    document.querySelectorAll('#sidebar .nav-link').forEach(link => link.addEventListener('click', closeSidebar));
-</script>
 @stack('scripts')
 </body>
 </html>
-
-

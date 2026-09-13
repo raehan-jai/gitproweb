@@ -1,10 +1,13 @@
 @extends('layouts.app')
 
+
 @section('title', 'Sertifikat Saya')
 @section('page-title', 'Sertifikat Saya')
 @section('page-subtitle', 'Daftar sertifikat yang kamu miliki')
 
+
 @section('content')
+
 
 @if($sertifikat->isEmpty())
 <div class="card table-card">
@@ -19,41 +22,84 @@
     @foreach($sertifikat as $item)
     <div class="col-md-6 col-lg-4">
         <div class="card stat-card h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
-                         style="width:50px;height:50px;background:linear-gradient(135deg,#667eea,#764ba2);">
-                        <i class="bi bi-award text-white fs-5"></i>
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width:50px;height:50px;background:linear-gradient(135deg,#667eea,#764ba2);">
+                            <i class="bi bi-award text-white fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">{{ $item->kegiatan->nama_kegiatan ?? '-' }}</h6>
+                            <small class="text-muted">{{ isset($item->kegiatan->tanggal) ? \Carbon\Carbon::parse($item->kegiatan->tanggal)->format('d M Y') : '-' }}</small>
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="mb-0 fw-bold">{{ $item->kegiatan->nama_kegiatan ?? '-' }}</h6>
-                        <small class="text-muted">{{ $item->kegiatan->tanggal->format('d M Y') ?? '' }}</small>
+
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Nomor Sertifikat</small>
+                        <code class="text-primary">{{ $item->nomor_sertifikat }}</code>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Penyelenggara</small>
+                        <span>{{ $item->kegiatan->penyelenggara ?? '-' }}</span>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <small class="text-muted d-block">Nomor Sertifikat</small>
-                    <code class="text-primary">{{ $item->nomor_sertifikat }}</code>
-                </div>
 
-                <div class="mb-3">
-                    <small class="text-muted d-block">Penyelenggara</small>
-                    <span>{{ $item->kegiatan->penyelenggara ?? '-' }}</span>
+                <!-- Tombol Lihat Sertifikat (Atas) & Download PDF (Bawah) -->
+                <div class="d-flex flex-column gap-2 mt-3">
+                    <button type="button"
+                            class="btn btn-outline-primary w-100 rounded-3 fw-semibold"
+                            data-bs-toggle="modal"
+                            data-bs-target="#previewModal{{ $item->id }}">
+                        <i class="bi bi-file-earmark-text me-1"></i> Lihat Sertifikat
+                    </button>
+                   
+                    <a href="{{ route('sertifikat.download', $item) }}"
+                       class="btn btn-primary w-100 rounded-3 fw-semibold">
+                        <i class="bi bi-download me-1"></i> Download PDF
+                    </a>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <a href="{{ route('sertifikat.download', $item) }}"
-                   class="btn btn-primary w-100 rounded-3 fw-semibold">
-                    <i class="bi bi-download me-2"></i> Download PDF
-                </a>
+
+    <!-- Modal Preview Sertifikat -->
+    <div class="modal fade" id="previewModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-header-title fw-bold">Preview Sertifikat</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <div class="ratio ratio-16x9 rounded overflow-hidden bg-light shadow-sm">
+                        <iframe src="{{ route('sertifikat.preview', $item) ?? route('sertifikat.download', $item) }}"
+                                style="border:0;"
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Tutup</button>
+                    <a href="{{ route('sertifikat.download', $item) }}" class="btn btn-primary rounded-3">
+                        <i class="bi bi-download me-1"></i> Download PDF
+                    </a>
+                </div>
             </div>
         </div>
     </div>
     @endforeach
 </div>
 
+
 <div class="mt-4">
     {{ $sertifikat->links() }}
 </div>
 @endif
+
 
 @endsection
