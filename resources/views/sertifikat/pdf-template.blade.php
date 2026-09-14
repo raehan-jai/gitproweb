@@ -15,6 +15,49 @@
 
     $fontNama   = (int) ($template->font_size_nama   ?? 26);
     $fontDetail = (int) ($template->font_size_detail ?? 13);
+    $texts = is_array($template->certificate_texts ?? null) ? $template->certificate_texts : [];
+    $positions = is_array($template->element_positions ?? null) ? $template->element_positions : [];
+    $styles = is_array($template->element_styles ?? null) ? $template->element_styles : [];
+    $positionDefaults = [
+        'logo' => ['x' => 50, 'y' => 7],
+        'eyebrow' => ['x' => 50, 'y' => 12],
+        'title' => ['x' => 50, 'y' => 20],
+        'given_to' => ['x' => 50, 'y' => 30],
+        'participant_name' => ['x' => 50, 'y' => 37],
+        'participant_info' => ['x' => 50, 'y' => 43],
+        'participation_text' => ['x' => 50, 'y' => 51],
+        'activity_name' => ['x' => 50, 'y' => 57],
+        'activity_detail' => ['x' => 50, 'y' => 63],
+        'ttd_kepsek' => ['x' => 39, 'y' => 71],
+        'principal_title' => ['x' => 39, 'y' => 76],
+        'principal_name' => ['x' => 39, 'y' => 80],
+        'principal_nip' => ['x' => 39, 'y' => 84],
+        'ttd_panitia' => ['x' => 61, 'y' => 71],
+        'committee_title' => ['x' => 61, 'y' => 76],
+        'committee_name' => ['x' => 61, 'y' => 80],
+        'committee_nip' => ['x' => 61, 'y' => 84],
+        'certificate_number' => ['x' => 50, 'y' => 90],
+    ];
+    $positions = array_replace_recursive($positionDefaults, $positions);
+    $styleDefaults = [
+        'eyebrow' => ['font_size' => 14],
+        'title' => ['font_size' => 48],
+        'given_to' => ['font_size' => 17],
+        'participant_name' => ['font_size' => $fontNama * 1.45],
+        'participant_info' => ['font_size' => $fontDetail * 1.05],
+        'participation_text' => ['font_size' => $fontDetail * 1.05],
+        'activity_name' => ['font_size' => $fontDetail * 1.75],
+        'activity_detail' => ['font_size' => $fontDetail * 1.05],
+        'principal_title' => ['font_size' => 13],
+        'principal_name' => ['font_size' => 12],
+        'principal_nip' => ['font_size' => $fontDetail * 1.05],
+        'committee_title' => ['font_size' => 13],
+        'committee_name' => ['font_size' => 12],
+        'committee_nip' => ['font_size' => $fontDetail * 1.05],
+        'certificate_number' => ['font_size' => $fontDetail * 1.05],
+    ];
+    $styles = array_replace_recursive($styleDefaults, $styles);
+    $text = static fn (string $key, string $fallback): string => (string) (($texts[$key] ?? '') !== '' ? $texts[$key] : $fallback);
 
     $perataan    = $template->perataan_teks ?? 'tengah';
     $textAlign   = match($perataan) {
@@ -22,17 +65,13 @@
         'kanan' => 'right',
         default => 'center',
     };
-    // Margin untuk garis dan tabel ttd
-    $marginGaris = match($perataan) {
-        'kiri'  => '0 auto 8px 0',
-        'kanan' => '0 0 8px auto',
-        default => '0 auto 8px auto',
+    $posStyle = static function (string $key, int $widthMm) use ($positions, $textAlign): string {
+        $position = $positions[$key] ?? ['x' => 50, 'y' => 50];
+        $halfWidth = $widthMm / 2;
+
+        return 'left:' . $position['x'] . '%;top:' . $position['y'] . '%;width:' . $widthMm . 'mm;margin-left:-' . $halfWidth . 'mm;text-align:' . $textAlign . ';';
     };
-    $marginTtd = match($perataan) {
-        'kiri'  => '0 auto 0 0',
-        'kanan' => '0 0 0 auto',
-        default => '0 auto',
-    };
+    $fontStyle = static fn (string $key): string => 'font-size:' . ($styles[$key]['font_size'] ?? 14) . 'px;';
 
     $bgSrc = '';
     if ($template && !empty($template->background_path)) {
@@ -83,9 +122,10 @@
     $namaOrg      = $kegiatan->penyelenggara ?? '';
     $tgl          = $kegiatan->tanggal->format('d M Y');
     $nomorSert    = $sertifikat->nomor_sertifikat ?? '';
+    $teksNomorSert = str_replace('PREVIEW', $nomorSert, $text('certificate_number', 'NO. SERTIFIKAT : ' . $nomorSert));
 
-    $styleNama     = 'font-size:' . $fontNama   . 'pt;font-weight:bold;color:#1a3a6e;margin-bottom:3px;';
-    $styleKegiatan = 'font-size:' . $fontDetail . 'pt;font-weight:bold;color:#1e3a5f;margin-bottom:3px;';
+    $styleNama     = $fontStyle('participant_name') . 'font-weight:bold;color:#1a3a6e;';
+    $styleKegiatan = $fontStyle('activity_name') . 'font-weight:bold;color:#1e3a5f;';
 @endphp
 <head>
     <meta charset="UTF-8">
@@ -119,43 +159,10 @@
             z-index: 1;
         }
 
-        .konten {
+        .item {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 297mm;
-            height: 210mm;
             z-index: 2;
-        }
-
-        table.outer {
-            width: 297mm;
-            height: 210mm;
-            border-collapse: collapse;
-        }
-
-        td.outer-cell {
-            width: 297mm;
-            height: 210mm;
-            text-align: center;
-            vertical-align: middle;
-            padding: 0;
-        }
-
-        .align-konten {
-            text-align: {{ $textAlign }};
-        }
-
-        table.content-table {
-            width: 220mm;
-            margin: 0 auto;
-            border-collapse: collapse;
-        }
-
-        td.content-cell {
-            text-align: {{ $textAlign }};
-            vertical-align: middle;
-            padding: 0;
+            line-height: 1.15;
         }
 
         .label-atas {
@@ -163,13 +170,13 @@
             color: #555;
             letter-spacing: 6px;
             text-transform: uppercase;
-            margin-bottom: 3px;
         }
 
         .logo-sekolah {
-            max-width: 58px;
-            max-height: 58px;
-            margin-bottom: 6px;
+            position: absolute;
+            z-index: 2;
+            max-width: 16mm;
+            max-height: 16mm;
         }
 
         .judul {
@@ -178,89 +185,46 @@
             font-weight: bold;
             letter-spacing: 10px;
             text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .garis-tengah {
-            border: none;
-            border-top: 1.5px solid #c8a000;
-            width: 120px;
-            margin: {{ $marginGaris }};
         }
 
         .teks-diberikan {
             font-size: 9pt;
             color: #555;
             font-style: italic;
-            margin-bottom: 4px;
         }
 
         .info-penerima {
             font-size: 8pt;
             color: #666;
-            margin-bottom: 6px;
-        }
-
-        .garis-nama {
-            border: none;
-            border-top: 1px solid #bbb;
-            width: 300px;
-            margin: {{ $marginGaris }};
         }
 
         .teks-partisipasi {
             font-size: 8.5pt;
             color: #444;
-            margin-bottom: 3px;
         }
 
         .detail-kegiatan {
             font-size: 7.5pt;
             color: #666;
-            margin-bottom: 12px;
-        }
-
-        table.ttd {
-            width: 300px;
-            margin: {{ $marginTtd }};
-            border-collapse: collapse;
-        }
-
-        td.ttd-cell {
-            width: 150px;
-            text-align: center;
-            vertical-align: bottom;
-            padding: 0 10px;
-        }
-
-        .ttd-img-wrap {
-            height: 45px;
-            text-align: center;
-            margin-bottom: 2px;
         }
 
         .ttd-img {
-            max-height: 45px;
-            max-width: 110px;
-        }
-
-        .ttd-garis {
-            border-top: 1px solid #333;
-            margin-bottom: 3px;
+            max-height: 13mm;
+            max-width: 32mm;
         }
 
         .ttd-jabatan {
+            border-top: 1px solid #333;
             font-size: 7.5pt;
             font-weight: bold;
             color: #222;
-            margin-bottom: 2px;
+            padding-top: 2mm;
         }
 
         .ttd-nama {
             font-size: 7pt;
             color: #333;
             text-decoration: underline;
-            margin-bottom: 1px;
         }
 
         .ttd-nip {
@@ -284,83 +248,54 @@
     <img class="bg-img" src="{!! $bgSrc !!}" alt="">
     @endif
 
-    <div class="konten">
-        <table class="outer">
-            <tr>
-                <td class="outer-cell">
-                    <table class="content-table">
-                        <tr>
-                            <td class="content-cell">
+    @if($logoSekolahSrc)
+        <img src="{!! $logoSekolahSrc !!}" class="logo-sekolah" style="{!! $posStyle('logo', 16) !!}" alt="Logo Sekolah">
+    @endif
 
-                                @if($logoSekolahSrc)
-                                    <img src="{!! $logoSekolahSrc !!}" class="logo-sekolah" alt="Logo Sekolah">
-                                @endif
+    <div class="item label-atas" style="{!! $posStyle('eyebrow', 95) !!}{!! $fontStyle('eyebrow') !!}">{!! e($text('eyebrow', 'Penghargaan Prestasi')) !!}</div>
+    <div class="item judul" style="{!! $posStyle('title', 120) !!}{!! $fontStyle('title') !!}">{!! e($text('title', 'Sertifikat')) !!}</div>
+    <div class="item teks-diberikan" style="{!! $posStyle('given_to', 70) !!}{!! $fontStyle('given_to') !!}">{!! e($text('given_to', 'Diberikan kepada')) !!}</div>
+    <div class="item" style="{!! $posStyle('participant_name', 100) !!}{!! $styleNama !!}">{!! e($namaPeserta) !!}</div>
 
-                                <div class="label-atas">Penghargaan &nbsp; Prestasi</div>
-                                <div class="judul">Sertifikat</div>
-                                <hr class="garis-tengah">
+    @if($kelasPeserta || $nisPeserta)
+        <div class="item info-penerima" style="{!! $posStyle('participant_info', 95) !!}{!! $fontStyle('participant_info') !!}">
+            {!! e($kelasPeserta) !!}
+            @if($kelasPeserta && $nisPeserta) &nbsp;&bull;&nbsp; @endif
+            @if($nisPeserta) NIS: {!! e($nisPeserta) !!} @endif
+        </div>
+    @endif
 
-                                <div class="teks-diberikan">Diberikan kepada</div>
-                                <div style="{!! $styleNama !!}">{!! $namaPeserta !!}</div>
+    <div class="item teks-partisipasi" style="{!! $posStyle('participation_text', 100) !!}{!! $fontStyle('participation_text') !!}">{!! e($text('participation_text', 'atas partisipasi dan dedikasi dalam kegiatan')) !!}</div>
+    <div class="item" style="{!! $posStyle('activity_name', 100) !!}{!! $styleKegiatan !!}">&ldquo;{!! e($namaKegiatan) !!}&rdquo;</div>
+    <div class="item detail-kegiatan" style="{!! $posStyle('activity_detail', 95) !!}{!! $fontStyle('activity_detail') !!}">{!! e($tgl) !!} &nbsp;&bull;&nbsp; {!! e($namaOrg) !!}</div>
 
-                                @if($kelasPeserta || $nisPeserta)
-                                <div class="info-penerima">
-                                    {!! $kelasPeserta !!}
-                                    @if($kelasPeserta && $nisPeserta) &nbsp;&bull;&nbsp; @endif
-                                    @if($nisPeserta) NIS: {!! $nisPeserta !!} @endif
-                                </div>
-                                @endif
-
-                                <hr class="garis-nama">
-
-                                <div class="teks-partisipasi">atas partisipasi dan dedikasi dalam kegiatan</div>
-                                <div style="{!! $styleKegiatan !!}">&ldquo;{!! $namaKegiatan !!}&rdquo;</div>
-                                <div class="detail-kegiatan">{!! $tgl !!} &nbsp;&bull;&nbsp; {!! $namaOrg !!}</div>
-
-                                <table class="ttd">
-                                    <tr>
-                                        <td class="ttd-cell">
-                                            <div class="ttd-img-wrap">
-                                                @if($ttdKepsekSrc)
-                                                    <img src="{!! $ttdKepsekSrc !!}" class="ttd-img" alt="TTD">
-                                                @endif
-                                            </div>
-                                            <div class="ttd-garis"></div>
-                                            <div class="ttd-jabatan">Kepala Sekolah</div>
-                                            @if($namaKepsek)
-                                                <div class="ttd-nama">{!! $namaKepsek !!}</div>
-                                            @endif
-                                            @if($nipKepsek)
-                                                <div class="ttd-nip">NIP. {!! $nipKepsek !!}</div>
-                                            @endif
-                                        </td>
-                                        <td class="ttd-cell">
-                                            <div class="ttd-img-wrap">
-                                                @if($ttdPanitiaSrc)
-                                                    <img src="{!! $ttdPanitiaSrc !!}" class="ttd-img" alt="TTD">
-                                                @endif
-                                            </div>
-                                            <div class="ttd-garis"></div>
-                                            <div class="ttd-jabatan">Ketua Panitia</div>
-                                            @if($namaPanitia)
-                                                <div class="ttd-nama">{!! $namaPanitia !!}</div>
-                                            @endif
-                                            @if($nipPanitia)
-                                                <div class="ttd-nip">NIP. {!! $nipPanitia !!}</div>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </table>
-
-                                <div class="nomor">NO. SERTIFIKAT : {!! $nomorSert !!}</div>
-
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+    <div class="item" style="{!! $posStyle('ttd_kepsek', 42) !!}">
+        @if($ttdKepsekSrc)
+            <img src="{!! $ttdKepsekSrc !!}" class="ttd-img" alt="TTD">
+        @endif
     </div>
+    <div class="item ttd-jabatan" style="{!! $posStyle('principal_title', 42) !!}{!! $fontStyle('principal_title') !!}">{!! e($text('principal_title', 'Kepala Sekolah')) !!}</div>
+    @if($namaKepsek)
+        <div class="item ttd-nama" style="{!! $posStyle('principal_name', 42) !!}{!! $fontStyle('principal_name') !!}">{!! e($text('principal_name', $namaKepsek)) !!}</div>
+    @endif
+    @if($nipKepsek)
+        <div class="item ttd-nip" style="{!! $posStyle('principal_nip', 42) !!}{!! $fontStyle('principal_nip') !!}">{!! e($text('principal_nip', 'NIP. ' . $nipKepsek)) !!}</div>
+    @endif
+
+    <div class="item" style="{!! $posStyle('ttd_panitia', 42) !!}">
+        @if($ttdPanitiaSrc)
+            <img src="{!! $ttdPanitiaSrc !!}" class="ttd-img" alt="TTD">
+        @endif
+    </div>
+    <div class="item ttd-jabatan" style="{!! $posStyle('committee_title', 42) !!}{!! $fontStyle('committee_title') !!}">{!! e($text('committee_title', 'Ketua Panitia')) !!}</div>
+    @if($namaPanitia)
+        <div class="item ttd-nama" style="{!! $posStyle('committee_name', 42) !!}{!! $fontStyle('committee_name') !!}">{!! e($text('committee_name', $namaPanitia)) !!}</div>
+    @endif
+    @if($nipPanitia)
+        <div class="item ttd-nip" style="{!! $posStyle('committee_nip', 42) !!}{!! $fontStyle('committee_nip') !!}">{!! e($text('committee_nip', 'NIP. ' . $nipPanitia)) !!}</div>
+    @endif
+
+    <div class="item nomor" style="{!! $posStyle('certificate_number', 90) !!}{!! $fontStyle('certificate_number') !!}">{!! e($teksNomorSert) !!}</div>
 
 </div>
 
