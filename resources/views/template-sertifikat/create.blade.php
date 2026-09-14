@@ -48,6 +48,35 @@
                         </div>
                     </div>
                 </div>
+
+                @php
+                    $perataanSaatIni = old('perataan_teks', 'kiri');
+                @endphp
+                <div class="mb-0">
+                    <label class="form-label fw-semibold d-block">Perataan Teks</label>
+                    <div class="btn-group" role="group" aria-label="Perataan Teks">
+
+                        <input type="radio" class="btn-check" name="perataan_teks" id="perataanKiri"
+                               value="kiri" autocomplete="off" {{ $perataanSaatIni === 'kiri' ? 'checked' : '' }}>
+                        <label class="btn btn-outline-secondary" for="perataanKiri" title="Rata Kiri">
+                            <i class="bi bi-text-left"></i>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="perataan_teks" id="perataanTengah"
+                               value="tengah" autocomplete="off" {{ $perataanSaatIni === 'tengah' ? 'checked' : '' }}>
+                        <label class="btn btn-outline-secondary" for="perataanTengah" title="Rata Tengah">
+                            <i class="bi bi-text-center"></i>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="perataan_teks" id="perataanKanan"
+                               value="kanan" autocomplete="off" {{ $perataanSaatIni === 'kanan' ? 'checked' : '' }}>
+                        <label class="btn btn-outline-secondary" for="perataanKanan" title="Rata Kanan">
+                            <i class="bi bi-text-right"></i>
+                        </label>
+
+                    </div>
+                    <small class="text-muted d-block mt-1">Menentukan perataan nama peserta &amp; detail pada sertifikat.</small>
+                </div>
             </div>
         </div>
 

@@ -301,8 +301,40 @@
     sidebarBackdrop?.addEventListener('click', closeSidebar);
     document.querySelectorAll('#sidebar .nav-link').forEach(link => link.addEventListener('click', closeSidebar));
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const alignmentInputs = document.querySelectorAll('[name="perataan_teks"]');
+        if (!alignmentInputs.length) return;
+
+        const findCertificatePreviewContent = () => document.querySelector(
+            '#certificatePreviewContent, .certificate-preview-content, [data-preview-alignment-target]'
+        );
+
+        const applyCertificateAlignment = value => {
+            const previewContent = findCertificatePreviewContent();
+            if (!previewContent) return;
+
+            const alignment = {
+                kiri: { alignItems: 'flex-start', textAlign: 'left' },
+                tengah: { alignItems: 'center', textAlign: 'center' },
+                kanan: { alignItems: 'flex-end', textAlign: 'right' },
+            }[value] || { alignItems: 'flex-start', textAlign: 'left' };
+
+            previewContent.style.alignItems = alignment.alignItems;
+            previewContent.style.textAlign = alignment.textAlign;
+            previewContent.dataset.textAlignment = value;
+        };
+
+        alignmentInputs.forEach(input => {
+            input.addEventListener('change', event => applyCertificateAlignment(event.target.value));
+
+            if (input.checked) {
+                applyCertificateAlignment(input.value);
+            }
+        });
+    });
+</script>
 @stack('scripts')
 </body>
 </html>
-
 

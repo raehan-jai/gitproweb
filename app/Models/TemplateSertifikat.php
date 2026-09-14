@@ -23,6 +23,7 @@ class TemplateSertifikat extends Model
         'nip_panitia',
         'font_size_nama',
         'font_size_detail',
+        'perataan_teks',
     ];
 
     public function sertifikat()
