@@ -303,20 +303,7 @@
     </div>
 </div>
 
-        <div style="margin-top:14px;">
-            <div class="info-item">
-                <div class="info-icon"><i class="bi bi-lightning-charge-fill"></i></div>
-                Generate sertifikat 1 klik
-            </div>
-            <div class="info-item">
-                <div class="info-icon"><i class="bi bi-file-earmark-pdf-fill"></i></div>
-                Export PDF berkualitas tinggi
-            </div>
-            <div class="info-item">
-                <div class="info-icon"><i class="bi bi-people-fill"></i></div>
-                Import peserta via Excel
-            </div>
-        </div>
+
     </div>
 </div>
 
