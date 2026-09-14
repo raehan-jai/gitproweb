@@ -75,6 +75,18 @@ class TemplateSertifikatController extends Controller
             'font_size_nama' => 'nullable|integer|min:10|max:72',
             'font_size_detail' => 'nullable|integer|min:8|max:36',
             'perataan_teks' => 'nullable|in:kiri,tengah,kanan',
+            'certificate_texts' => 'nullable|array',
+            'certificate_texts.*' => 'nullable|string|max:1000',
+            'element_positions' => 'nullable|array',
+            'element_positions.*.x' => 'nullable|numeric|min:0|max:100',
+            'element_positions.*.y' => 'nullable|numeric|min:0|max:100',
+            'element_styles' => 'nullable|array',
+            'element_styles.*.font_size' => 'nullable|numeric|min:6|max:120',
+            'remove_images' => 'nullable|array',
+            'remove_images.background' => 'nullable|boolean',
+            'remove_images.logo_sekolah' => 'nullable|boolean',
+            'remove_images.ttd_kepsek' => 'nullable|boolean',
+            'remove_images.ttd_panitia' => 'nullable|boolean',
         ]);
     }
 
@@ -91,18 +103,22 @@ class TemplateSertifikatController extends Controller
         ];
 
         foreach ($files as $input => $config) {
-            if (!$request->hasFile($input)) {
-                continue;
-            }
-
-            if ($template && $template->{$config['column']}) {
+            if ($request->boolean("remove_images.$input") && $template && $template->{$config['column']}) {
                 Storage::disk('public')->delete($template->{$config['column']});
+                $data[$config['column']] = null;
             }
 
-            $data[$config['column']] = $request->file($input)->store($config['directory'], 'public');
+            if ($request->hasFile($input)) {
+                if ($template && $template->{$config['column']}) {
+                    Storage::disk('public')->delete($template->{$config['column']});
+                }
+
+                $data[$config['column']] = $request->file($input)->store($config['directory'], 'public');
+            }
         }
 
         unset($data['background'], $data['logo_sekolah'], $data['ttd_kepsek'], $data['ttd_panitia']);
+        unset($data['remove_images']);
     }
 
     private function deleteFiles(TemplateSertifikat $template): void

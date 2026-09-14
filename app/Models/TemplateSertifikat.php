@@ -24,6 +24,15 @@ class TemplateSertifikat extends Model
         'font_size_nama',
         'font_size_detail',
         'perataan_teks',
+        'certificate_texts',
+        'element_positions',
+        'element_styles',
+    ];
+
+    protected $casts = [
+        'certificate_texts' => 'array',
+        'element_positions' => 'array',
+        'element_styles' => 'array',
     ];
 
     public function sertifikat()
